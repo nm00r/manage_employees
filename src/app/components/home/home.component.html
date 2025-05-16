@@ -1,0 +1,320 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Contacts ({{filteredEmployees.length}})</h2>
+      <button class="btn btn-primary" (click)="openAddModal()">
+        <i class="fas fa-plus"></i> Add Contact
+      </button>
+    </div>
+    <div class="mb-3">
+      <div class="input-group">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Search contacts" 
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <button class="btn btn-sm btn-outline-secondary me-2" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
+          <i class="fas fa-th-large"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </div>
+    
+    @if (viewMode === 'grid') {
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @for (employee of filteredEmployees; track employee.id) {
+          <div class="col">
+            <div class="card h-100 position-relative">
+              <div class="dropdown position-absolute top-0 end-0 m-2">
+                <button class="btn btn-light btn-sm rounded-circle" type="button" id="dropdownMenu{{employee.id}}" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" [attr.aria-labelledby]="'dropdownMenu' + employee.id">
+                  <li><button class="dropdown-item" (click)="openEditModal(employee.id)"><i class="fas fa-edit me-2"></i>Edit</button></li>
+                  <li><button class="dropdown-item" (click)="deleteEmployee(employee.id)"><i class="fas fa-trash me-2"></i>Delete</button></li>
+                </ul>
+              </div>
+              <div class="text-center pt-4">
+                <img [src]="employee.imageUrl" alt="{{ employee.name }}" class="rounded-circle" width="120" height="120" style="object-fit: cover;">
+              </div>
+              <div class="card-body text-center">
+                <h5 class="card-title mb-1">{{ employee.name }}</h5>
+                <div class="employee-details mt-3">
+                  <div class="d-flex mb-2">
+                    <div class="text-muted me-2"><i class="fas fa-envelope"></i></div>
+                    <div class="text-start">{{ employee.email }}</div>
+                  </div>
+                  <div class="d-flex mb-2">
+                    <div class="text-muted me-2"><i class="fa-solid fa-dollar-sign"></i></div>
+                    <div class="text-start">{{ employee.salary }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="col-12 text-center py-5">
+            <p class="text-muted">No contacts found</p>
+          </div>
+        }
+      </div>
+    }
+    
+    @if (viewMode === 'list') {
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Salary</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (employee of filteredEmployees; track employee.id) {
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <img [src]="employee.imageUrl" alt="{{ employee.name }}" class="rounded-circle me-3" width="40" height="40" style="object-fit: cover;">
+                    <span>{{ employee.name }}</span>
+                  </div>
+                </td>
+                <td>{{ employee.email }}</td>
+                <td>{{ employee.salary }}</td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btn btn-light btn-sm rounded-circle" type="button" id="listDropdownMenu{{employee.id}}" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" [attr.aria-labelledby]="'dropdownMenu' + employee.id">
+                      <li><button class="dropdown-item" (click)="openEditModal(employee.id)"><i class="fas fa-edit me-2"></i>Edit</button></li>
+                      <li><button class="dropdown-item" (click)="deleteEmployee(employee.id)"><i class="fas fa-trash me-2"></i>Delete</button></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center">No contacts found</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  
+    <!-- Simple Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <div class="text-muted">
+        Showing {{ filteredEmployees.length > 0 ? 1 : 0 }} to {{ filteredEmployees.length > itemsPerPage ? itemsPerPage : filteredEmployees.length }} of {{ filteredEmployees.length }} items
+      </div>
+      <div>
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="javascript:void(0)" (click)="goToPage(currentPage - 1)">
+              <i class="fas fa-chevron-left"></i>
+            </a>
+          </li>
+          @for (page of getPageNumbers(); track page) {
+            <li class="page-item" [class.active]="page === currentPage">
+              <a class="page-link" href="javascript:void(0)" (click)="goToPage(page)">{{ page }}</a>
+            </li>
+          }
+          <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
+            <a class="page-link" href="javascript:void(0)" (click)="goToPage(currentPage + 1)">
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Add Modal -->
+    <div #addEmployeeModal class="modal fade" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addEmployeeModalLabel">Add New Contact</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+              <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="name" 
+                  formControlName="name"
+                  [ngClass]="{ 'is-invalid': employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched }">
+                @if (employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched) {
+                  <div class="invalid-feedback">
+                    Name is required
+                  </div>
+                }
+              </div>
+              
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input 
+                  type="email" 
+                  class="form-control" 
+                  id="email" 
+                  formControlName="email"
+                  [ngClass]="{ 'is-invalid': employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched }">
+                @if (employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched) {
+                  <div class="invalid-feedback">
+                    @if (employeeForm.get('email')?.errors?.['required']) {
+                      Email is required
+                    }
+                    @if (employeeForm.get('email')?.errors?.['email']) {
+                      Please enter a valid email
+                    }
+                  </div>
+                }
+              </div>
+              
+              <div class="mb-3">
+                <label for="imageUrl" class="form-label">Image URL</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="imageUrl" 
+                  formControlName="imageUrl"
+                  [ngClass]="{ 'is-invalid': employeeForm.get('imageUrl')?.invalid && employeeForm.get('imageUrl')?.touched }">
+                @if (employeeForm.get('imageUrl')?.invalid && employeeForm.get('imageUrl')?.touched) {
+                  <div class="invalid-feedback">
+                    Image URL is required
+                  </div>
+                }
+              </div>
+              
+              <div class="mb-3">
+                <label for="salary" class="form-label">Salary</label>
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  id="salary" 
+                  formControlName="salary"
+                  [ngClass]="{ 'is-invalid': employeeForm.get('salary')?.invalid && employeeForm.get('salary')?.touched }">
+                @if (employeeForm.get('salary')?.invalid && employeeForm.get('salary')?.touched) {
+                  <div class="invalid-feedback">
+                    @if (employeeForm.get('salary')?.errors?.['required']) {
+                      Salary is required
+                    }
+                    @if (employeeForm.get('salary')?.errors?.['min']) {
+                      Salary must be a positive number
+                    }
+                  </div>
+                }
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" [disabled]="employeeForm.invalid">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Edit Modal -->
+    <div #editEmployeeModal class="modal fade" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editEmployeeModalLabel">Edit Contact</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+              <div class="mb-3">
+                <label for="editName" class="form-label">Name</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="editName" 
+                  formControlName="name"
+                  [ngClass]="{ 'is-invalid': employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched }">
+                @if (employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched) {
+                  <div class="invalid-feedback">
+                    Name is required
+                  </div>
+                }
+              </div>
+              
+              <div class="mb-3">
+                <label for="editEmail" class="form-label">Email</label>
+                <input 
+                  type="email" 
+                  class="form-control" 
+                  id="editEmail" 
+                  formControlName="email"
+                  [ngClass]="{ 'is-invalid': employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched }">
+                @if (employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched) {
+                  <div class="invalid-feedback">
+                    @if (employeeForm.get('email')?.errors?.['required']) {
+                      Email is required
+                    }
+                    @if (employeeForm.get('email')?.errors?.['email']) {
+                      Please enter a valid email
+                    }
+                  </div>
+                }
+              </div>
+              
+              <div class="mb-3">
+                <label for="editImageUrl" class="form-label">Image URL</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="editImageUrl" 
+                  formControlName="imageUrl"
+                  [ngClass]="{ 'is-invalid': employeeForm.get('imageUrl')?.invalid && employeeForm.get('imageUrl')?.touched }">
+                @if (employeeForm.get('imageUrl')?.invalid && employeeForm.get('imageUrl')?.touched) {
+                  <div class="invalid-feedback">
+                    Image URL is required
+                  </div>
+                }
+              </div>
+              
+              <div class="mb-3">
+                <label for="editSalary" class="form-label">Salary</label>
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  id="editSalary" 
+                  formControlName="salary"
+                  [ngClass]="{ 'is-invalid': employeeForm.get('salary')?.invalid && employeeForm.get('salary')?.touched }">
+                @if (employeeForm.get('salary')?.invalid && employeeForm.get('salary')?.touched) {
+                  <div class="invalid-feedback">
+                    @if (employeeForm.get('salary')?.errors?.['required']) {
+                      Salary is required
+                    }
+                    @if (employeeForm.get('salary')?.errors?.['min']) {
+                      Salary must be a positive number
+                    }
+                  </div>
+                }
+              </div>
+              
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" [disabled]="employeeForm.invalid">Update</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

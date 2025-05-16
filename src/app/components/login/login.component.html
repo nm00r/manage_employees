@@ -1,0 +1,70 @@
+ <div class="container position-relative overflow-hidden ">
+    <div class="forms-container position-absolute w-100 h-100 top-0 ">
+      <div class="login position-absolute d-grid z-1 ">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class=" d-flex align-items-center justify-content-center flex-column overflow-hidden z-1">
+          <h2 class="title mb-2">Login</h2>
+          <div class="input-field position-relative d-grid">
+            <i class="fas fa-envelope"></i>
+            <input 
+              type="text" 
+              placeholder="Email" 
+              formControlName="email"
+              [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+            />
+          </div>
+          <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="error-message">
+            <div *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</div>
+            <div *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</div>
+          </div>
+          
+          <div class="input-field position-relative d-grid">
+            <i class="fas fa-lock"></i>
+            <input 
+              type="password" 
+              placeholder="Password" 
+              formControlName="password"
+              [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            />
+          </div>
+          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+            Password is required
+          </div>
+          
+          <div *ngIf="errorMessage" class="error-message">
+            {{errorMessage}}
+          </div>
+          
+          <input type="submit" value="Login" class="btn solid border-0 " [disabled]="loginForm.invalid" />
+          
+          <p class="social-text">Or Sign in with social platforms</p>
+          <div class="social-media d-flex justify-content-center">
+            <a href="#" class="social-icon d-flex justify-content-center align-items-center">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="social-icon d-flex justify-content-center align-items-center">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="social-icon d-flex justify-content-center align-items-center">
+              <i class="fab fa-google"></i>
+            </a>
+            <a href="#" class="social-icon d-flex justify-content-center align-items-center">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  
+    <div class="panels-container position-absolute top-0 w-100 h-100 d-grid">
+      <div class="panel left-panel">
+        <div class="content">
+          <h3>New here?</h3>
+          <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis,
+            ex ratione. Aliquid!
+          </p>
+        </div>
+        <img src="assets/image.png" class="image" alt="" />
+      </div>
+    </div>
+  </div>
