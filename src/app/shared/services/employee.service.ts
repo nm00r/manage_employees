@@ -30,8 +30,8 @@ export class EmployeeService {
     } else {
       this.employees = [
         { id: 1, name: 'John Doe', email: 'john@example.com', imageUrl: 'https://randomuser.me/api/portraits/men/1.jpg', salary: 50000 },
-        { id: 2, name: 'Jane Smith', email: 'jane@example.com', imageUrl: 'https://randomuser.me/api/portraits/women/1.jpg', salary: 60000 },
-        { id: 3, name: 'Bob Johnson', email: 'bob@example.com', imageUrl: 'https://randomuser.me/api/portraits/men/2.jpg', salary: 55000 }
+        { id: 2, name: 'Jane Smith', email: 'jane@example.com', imageUrl: 'https://randomuser.me/api/portraits/women/31.jpg', salary: 60000 },
+        { id: 3, name: 'Bob Johnson', email: 'bob@example.com', imageUrl: 'https://randomuser.me/api/portraits/men/20.jpg', salary: 55000 }
       ];
       this.lastId = 3;
       this.saveEmployees();
