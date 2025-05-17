@@ -26,3 +26,27 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 "# manage_employee" 
+
+
+
+## Features
+- Login system with form validation
+- Employee list with search functionality
+- Add/edit employees using Bootstrap modals
+- Delete confirmation with SweetAlert2
+- Responsive design
+
+## Installation
+1. Clone the repository
+2. Run `npm install`
+3. Start the development server with `npm start`
+
+## Login Credentials
+- Email: admin@example.com
+- Password: admin123
+
+## Technologies
+- Angular 17
+- Bootstrap 5
+- SweetAlert2
+- Font Awesome
